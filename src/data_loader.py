@@ -11,7 +11,7 @@ Trade-off:
 import mmap, os, time, csv, io
 
 def load_with_mmap(filepath):
-    """Load CSV via mmap() — file mapped directly into process virtual memory."""
+    
     start = time.perf_counter()
     fd = os.open(filepath, os.O_RDONLY)
     file_size = os.fstat(fd).st_size
