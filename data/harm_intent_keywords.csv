@@ -1,0 +1,71 @@
+thai,category,english_hint
+ลามก,sexual,obscene
+อนาจาร,sexual,pornographic
+ทางเพศ,sexual,sexual
+เร้าอารมณ์,sexual,arousing
+เปลือย,sexual,nude
+ข่มขืน,sexual,rape
+ล่วงละเมิด,sexual,abuse
+ฆ่าตัวตาย,self_harm,suicide
+ทำร้ายตัวเอง,self_harm,self-harm
+อยากตาย,self_harm,want to die
+ลายนิ้วมือ,privacy,fingerprint
+จดจำใบหน้า,privacy,facial recognition
+คลื่นเสียง,privacy,voice wave
+ข้อมูลส่วนตัว,privacy,personal data
+ข้อมูลส่วนบุคคล,privacy,personal info
+เปิดเผยข้อมูล,privacy,reveal info
+ข้อมูลลับ,privacy,classified info
+ความลับทางการค้า,privacy,trade secret
+ความลับ,privacy,secret
+รหัสผ่าน,privacy,password
+หมายเลขบัตร,privacy,card number
+เลขบัตรประชาชน,privacy,ID number
+ที่อยู่ของ,privacy,address of
+เบอร์โทร,privacy,phone number
+ผิดกฎหมาย,illegal,illegal
+ทำระเบิด,illegal,make bomb
+อาวุธ,illegal,weapon
+ยาเสพติด,illegal,drugs
+ฆ่า,illegal,kill
+ลักทรัพย์,illegal,theft
+แฮก,illegal,hack
+แฮ็ก,illegal,hack
+ปลอมแปลง,illegal,forge
+ฟอกเงิน,illegal,launder
+ลอบสังหาร,illegal,assassinate
+ล่าสัตว์,illegal,poach
+ทารุณ,illegal,torture
+ทารุณสัตว์,illegal,animal abuse
+ต่อสู้ของสุนัข,illegal,dog fight
+สารพิษ,illegal,poison
+ผิดกฎหมาย,illegal,illegal
+หลีกเลี่ยงกฎหมาย,illegal,evade law
+หนีตำรวจ,illegal,evade police
+ไม่ให้โดนตำรวจจับ,illegal,avoid police
+หลีกเลี่ยงการถูกจับ,illegal,avoid arrest
+ช่องโหว่,info_hazard,vulnerability
+ไซเบอร์,info_hazard,cyber
+มัลแวร์,info_hazard,malware
+เจาะระบบ,info_hazard,penetrate system
+ล้มล้าง,info_hazard,overthrow
+ล้อเลียน,cultural,mock
+ดูถูก,cultural,insult
+ดูหมิ่น,cultural,contempt
+หมิ่นพระบรมเดชานุภาพ,cultural,lese-majeste
+หมิ่นสถาบัน,cultural,insult monarchy
+ล้อเลียนพระ,cultural,mock monks
+ล้อเลียนศาสนา,cultural,mock religion
+แซงคิว,cultural,cut in line
+ไม่สะอาด,cultural,unclean
+ตะคอก,cultural,yell at
+กลั่นแกล้ง,cultural,bully
+ข่าวปลอม,misinfo,fake news
+ข้อมูลเท็จ,misinfo,false info
+ทฤษฎีสมคบคิด,misinfo,conspiracy
+เฟคนิวส์,misinfo,fake news
+บิดเบือน,misinfo,distort
+โฆษณาชวนเชื่อ,misinfo,propaganda
+หลอกลวง,misinfo,deceive
+แชร์ลูกโซ่,misinfo,pyramid scheme
+ฉ้อโกง,misinfo,fraud
