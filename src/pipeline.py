@@ -36,8 +36,10 @@ def run_pipeline():
     rows_rd, t_rd, _  = load_with_read(DATA)
     diff = abs(t_mm - t_rd) * 1000
     print(f"  mmap(): {t_mm:.4f}s | read(): {t_rd:.4f}s | {len(rows_mm):,} rows | {sz/1024:.1f} KB")
-    print(f"  Difference: {diff:.1f}ms — Using mmap() (OS demo: zero-copy via page faults)\n")
-    data = rows_mm  # Always use mmap for OS demonstration
+    print(f"  Difference: {diff:.1f}ms — Using read()\n")
+    data = rows_mm if t_mm < t_rd else rows_rd
+    winner = "mmap()" if t_mm < t_rd else "read()"
+    print(f"  → Using {winner}")
 
     # ── STEP 2: Multiprocessing ──────────────────────────────────
     print("━" * 65)
