@@ -36,7 +36,7 @@ def run_pipeline():
     rows_rd, t_rd, _  = load_with_read(DATA)
     diff = abs(t_mm - t_rd) * 1000
     print(f"  mmap(): {t_mm:.4f}s | read(): {t_rd:.4f}s | {len(rows_mm):,} rows | {sz/1024:.1f} KB")
-    print(f"  Difference: {diff:.1f}ms — Using read()\n")
+    print(f"  Difference: {diff:.1f}ms\n")
     data = rows_mm if t_mm < t_rd else rows_rd
     winner = "mmap()" if t_mm < t_rd else "read()"
     print(f"  → Using {winner}")
@@ -95,14 +95,7 @@ def run_pipeline():
     print(f"  ────────────────────────")
     print(f"  Total:         {total:.4f}s")
     print(f"  Throughput:    {len(flat)/total:,.0f} samples/sec")
-    print()
-    print("  OS Components:")
-    print("    ✓ read()              — used read() for better memory management")
-    print("    ✓ fork() / Pool       — Multiprocessing")
-    print("    ✓ Lock / Semaphore    — Synchronization")
-    print("    ✓ sched_getaffinity() — CPU scheduling")
-    print("    ✓ fsync() + rename()  — Atomic file writes")
-    print("    ✓ stat() / unlink()   — File management")
+
     print("━" * 65)
 
 def run_all_benchmarks():
