@@ -92,7 +92,7 @@ def run_pipeline():
 
     t_load = t_mm if t_mm < t_rd else t_rd
 
-    print(f" Data loading: {'{t_load:.4f}'}s ({'{winner}'})")
+    print(f"  Data loading:  {t_load:.4f}s  ({winner})")
     print(f"  Preprocessing: {t_pre:.4f}s  ({n_w} workers)")
     print(f"  Saving:        {t_save:.4f}s  (atomic write)")
     print(f"  ────────────────────────")
