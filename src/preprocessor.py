@@ -51,7 +51,8 @@ def preprocess_chunk(args):
     return results
 
 def split_chunks(data, n):
-    sz = max(1, len(data) // n)
+    import math
+    sz = max(1, math.ceil(len(data) / n))
     return [data[i:i+sz] for i in range(0, len(data), sz)]
 
 def load_csv(filepath):
