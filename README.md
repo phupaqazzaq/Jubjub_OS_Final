@@ -13,8 +13,8 @@ To run this notebook, follow the steps below.
 First, clone the project repository from GitHub and navigate into its directory:
 
 ```python
-!git clone https://github.com/phupaqazzaq/Operating-system-Final-project.git
-%cd Operating-system-Final-project
+!git clone https://github.com/phupaqazzaq/Jubjub_OS_Final/tree/main
+%cd Jubjub_OS_Final
 ```
 
 ### 2. Run the Data Pipeline
@@ -22,7 +22,7 @@ First, clone the project repository from GitHub and navigate into its directory:
 Execute the main pipeline script. This script handles data loading, multiprocessing for preprocessing, and atomic file saving for the results. The output will provide a summary of the pipeline's performance.
 
 ```python
-!python /content/Operating-system-Final-project/src/pipeline.py
+!python src/pipeline.py
 ```
 
 #### Pipeline Overview:
