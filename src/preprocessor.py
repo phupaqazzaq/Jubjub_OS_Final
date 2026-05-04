@@ -50,11 +50,17 @@ def preprocess_chunk(args):
         })
     return results
 
-import math
-
 def split_chunks(data, n):
-    sz = max(1, math.ceil(len(data) / n))
-    return [data[i:i+sz] for i in range(0, len(data), sz)]
+    """Split data into exactly n chunks (no remainder chunk)."""
+    chunks = []
+    sz = len(data) // n
+    remainder = len(data) % n
+    start = 0
+    for i in range(n):
+        end = start + sz + (1 if i < remainder else 0)
+        chunks.append(data[start:end])
+        start = end
+    return chunks
 
 def load_csv(filepath):
     with open(filepath, 'r', encoding='utf-8-sig') as f:
@@ -84,7 +90,7 @@ def benchmark_workers(data, max_w=None):
         total = sum(len(r) for r in all_res)
         pids = set(item['pid'] for batch in all_res for item in batch)
         results[n] = elapsed
-        print(f"  {n} worker(s): {elapsed:.4f}s | {total:,} samples | PIDs: {pids}")
+        print(f"  {n} worker(s): {elapsed:.4f}s | {total:,} total ({len(chunks)} chunks of ~{len(chunks[0]):,}) | PIDs: {pids}")
 
     print("\n  --- Speedup Analysis ---")
     base = results[1]
