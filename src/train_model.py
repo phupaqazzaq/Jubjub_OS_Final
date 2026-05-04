@@ -30,12 +30,28 @@ MODEL_DIR = BASE_DIR / "model"
 
 
 def load_data(filepath):
-    """Load dataset (OS file management)."""
-    print(f"[1/4] Loading data via read()...")
+    """Load dataset — benchmarks mmap vs read, picks the faster one."""
+    print(f"[1/4] Loading data (benchmarking mmap vs read)...")
+    
+    # Benchmark mmap
     start = time.perf_counter()
+    fd = os.open(str(filepath), os.O_RDONLY)
+    size = os.fstat(fd).st_size
+    mm = mmap.mmap(fd, size, access=mmap.ACCESS_READ)
+    raw_mm = mm.read().decode("utf-8-sig")
+    mm.close()
+    os.close(fd)
+    t_mmap = time.perf_counter() - start
 
+    # Benchmark read
+    start = time.perf_counter()
     with open(str(filepath), 'r', encoding='utf-8-sig') as f:
-        raw = f.read()
+        raw_rd = f.read()
+    t_read = time.perf_counter() - start
+
+    winner = "mmap" if t_mmap < t_read else "read"
+    raw = raw_mm if t_mmap < t_read else raw_rd
+    print(f"  mmap: {t_mmap:.4f}s | read: {t_read:.4f}s → Using {winner}()")
 
     reader = csv.DictReader(io.StringIO(raw))
     texts, labels = [], []
@@ -49,10 +65,8 @@ def load_data(filepath):
             texts.append(text)
             labels.append(label)
 
-    elapsed = time.perf_counter() - start
     toxic = sum(labels)
-    print(f"  Loaded {len(texts):,} samples in {elapsed:.3f}s (mmap)")
-    print(f"  Toxic: {toxic:,} ({toxic/len(labels)*100:.1f}%) | Non-toxic: {len(labels)-toxic:,}")
+    print(f"  Loaded {len(texts):,} samples | Toxic: {toxic:,} ({toxic/len(labels)*100:.1f}%) | Non-toxic: {len(labels)-toxic:,}")
     return texts, labels
 
 
