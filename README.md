@@ -25,7 +25,10 @@ git clone https://github.com/phupaqazzaq/Jubjub_OS_Final.git
 cd Jubjub_OS_Final
 pip install scikit-learn pythainlp pyarrow scipy pandas
 ```
-
+### Notes for local machine
+```
+Please use python3 instead of python when encounter ModuleNotFoundError
+```
 ---
 
 ## Command Reference
@@ -34,31 +37,31 @@ pip install scikit-learn pythainlp pyarrow scipy pandas
 
 | Command | What it does |
 |---------|-------------|
-| `python src/train_model.py` | Train the model from scratch. Benchmarks mmap vs read, picks the faster one. Tokenizes with multiprocessing. Saves model with fsync. Outputs accuracy and classification report. |
-| `python src/predict.py` | Run demo predictions on 5 sample Thai texts. Shows toxic/non-toxic with confidence. |
-| `python src/predict.py --interactive` | Interactive mode. Type any Thai text and get instant toxic/non-toxic prediction. Type `quit` to exit. |
-| `python src/predict.py "ไอ้บ้า มึงไปตายซะ"` | Predict a single text from command line. Shows label, confidence, probabilities, and latency. |
-| `python src/predict.py --file input.txt` | Predict all lines in a text file. Shows per-line results and summary. |
-| `python src/evaluate.py` | Evaluate model on the test set (1,889 harmful prompts). Shows overall recall, recall by risk area, recall by harm type, and worst misses. |
+| `python3 src/train_model.py` | Train the model from scratch. Benchmarks mmap vs read, picks the faster one. Tokenizes with multiprocessing. Saves model with fsync. Outputs accuracy and classification report. |
+| `python3 src/predict.py` | Run demo predictions on 5 sample Thai texts. Shows toxic/non-toxic with confidence. |
+| `python3 src/predict.py --interactive` | Interactive mode. Type any Thai text and get instant toxic/non-toxic prediction. Type `quit` to exit. |
+| `python3 src/predict.py "ไอ้บ้า มึงไปตายซะ"` | Predict a single text from command line. Shows label, confidence, probabilities, and latency. |
+| `python3 src/predict.py --file input.txt` | Predict all lines in a text file. Shows per-line results and summary. |
+| `python3 src/evaluate.py` | Evaluate model on the test set (1,889 harmful prompts). Shows overall recall, recall by risk area, recall by harm type, and worst misses. |
 
 ### OS Benchmarks
 
 | Command | What it does |
 |---------|-------------|
-| `python src/pipeline.py` | Run the full OS-optimized pipeline: mmap/read benchmark → multiprocessing tokenization → atomic write. Shows timing for each step. |
-| `python src/pipeline.py --all-benchmarks` | Run the pipeline + ALL individual OS benchmarks below in sequence. Use this to generate all demo screenshots at once. |
-| `python src/data_loader.py` | **Memory Management** — Benchmark mmap() vs read() vs chunked read (512B, 64KB). Shows which is fastest for the 7MB dataset and why. |
-| `python src/preprocessor.py --benchmark` | **Process Management** — Benchmark 1 vs 2 vs 4 vs 8 workers. Shows speedup, efficiency, and per-worker chunk sizes. Demonstrates fork(). |
-| `python src/sync_queue.py` | **Synchronization** — Benchmark bounded buffer with different sizes (10, 50, 100, 500, 1000). Producer-consumer pattern with mutex + semaphores. Reports actual fastest buffer size. |
-| `python src/io_benchmark.py` | **I/O Management** — Benchmark write strategies: buffered, unbuffered, fsync per row, fsync per 100, fsync per 1000. Shows the durability vs speed trade-off. |
-| `python src/scheduler_demo.py` | **CPU Scheduling** — Benchmark CPU affinity (pinned vs unpinned) and context switch overhead (1 vs 4 vs 16 processes). Uses sched_setaffinity() and nice(). |
-| `python src/file_manager.py` | **File Management** — Benchmark page cache (cold vs warm read), atomic vs direct write, and stat() syscall speed. |
+| `python3 src/pipeline.py` | Run the full OS-optimized pipeline: mmap/read benchmark → multiprocessing tokenization → atomic write. Shows timing for each step. |
+| `python3 src/pipeline.py --all-benchmarks` | Run the pipeline + ALL individual OS benchmarks below in sequence. Use this to generate all demo screenshots at once. |
+| `python3 src/data_loader.py` | **Memory Management** — Benchmark mmap() vs read() vs chunked read (512B, 64KB). Shows which is fastest for the 7MB dataset and why. |
+| `python3 src/preprocessor.py --benchmark` | **Process Management** — Benchmark 1 vs 2 vs 4 vs 8 workers. Shows speedup, efficiency, and per-worker chunk sizes. Demonstrates fork(). |
+| `python3 src/sync_queue.py` | **Synchronization** — Benchmark bounded buffer with different sizes (10, 50, 100, 500, 1000). Producer-consumer pattern with mutex + semaphores. Reports actual fastest buffer size. |
+| `python3 src/io_benchmark.py` | **I/O Management** — Benchmark write strategies: buffered, unbuffered, fsync per row, fsync per 100, fsync per 1000. Shows the durability vs speed trade-off. |
+| `python3 src/scheduler_demo.py` | **CPU Scheduling** — Benchmark CPU affinity (pinned vs unpinned) and context switch overhead (1 vs 4 vs 16 processes). Uses sched_setaffinity() and nice(). |
+| `python3 src/file_manager.py` | **File Management** — Benchmark page cache (cold vs warm read), atomic vs direct write, and stat() syscall speed. |
 
 ### Performance Comparison
 
 | Command | What it does |
 |---------|-------------|
-| `python src/benchmark_optimization.py` | **Before vs After** — Runs the entire pipeline twice: once naive (no OS optimization), once optimized. Compares timing stage-by-stage and shows total speedup. |
+| `python3 src/benchmark_optimization.py` | **Before vs After** — Runs the entire pipeline twice: once naive (no OS optimization), once optimized. Compares timing stage-by-stage and shows total speedup. |
 
 ---
 

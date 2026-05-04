@@ -1,2 +1,9 @@
 __pycache__/
 *.pyc
+data/thai_preprocessed.csv
+data/test_results.csv
+data/_*.csv
+data/_*.txt
+data/_*.bin
+model/
+.DS_Store
