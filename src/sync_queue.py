@@ -80,13 +80,22 @@ def benchmark_buffer_sizes(filepath):
     print("=" * 65)
     print("BENCHMARK: Synchronization — Bounded Buffer (Producer-Consumer)")
     print("=" * 65)
+    results = {}
     for bs in [10, 50, 100, 500, 1000]:
         elapsed, count, buf = run_pipeline(filepath, buffer_size=bs, n_consumers=2)
+        results[bs] = elapsed
         print(f"  Buffer={bs:>5}: {elapsed:.4f}s | {count:,} items | produced={buf.produced:,} consumed={buf.consumed:,}\n")
 
+    fastest_bs = min(results, key=results.get)
+    slowest_bs = max(results, key=results.get)
+    fastest_bs = min(results, key=results.get)
+    slowest_bs = max(results, key=results.get)
     print("  --- Analysis ---")
-    print("  Smaller buffer → more semaphore waits (blocking) → slower")
-    print("  Larger buffer → fewer blocks, but higher memory usage")
+    print(f"  Fastest: buffer={fastest_bs} ({results[fastest_bs]:.4f}s)")
+    print(f"  Slowest: buffer={slowest_bs} ({results[slowest_bs]:.4f}s)")
+    print(f"  Speedup: {results[slowest_bs]/results[fastest_bs]:.2f}x")
+    print("  Small buffer → frequent semaphore waits (blocking) → slower")
+    print("  Larger buffer → fewer blocks, but returns diminish past a point")
     print("  The Lock (mutex) serializes access — this is the bottleneck")
     print("=" * 65)
 
