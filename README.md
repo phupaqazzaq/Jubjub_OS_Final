@@ -1,137 +1,180 @@
 # Thai Harassment Detection — OS-Optimized Pipeline
 
-## Project Overview
-A Thai text toxicity classifier that demonstrates OS optimization concepts:
-CPU scheduling, memory management, multiprocessing, synchronization, and I/O management.
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/phupaqazzaq/Jubjub_OS_Final/blob/main/notebooks/Jubjub_OS_Final_Project.ipynb)
+![Python](https://img.shields.io/badge/python-3.10%2B-blue)
 
-**Dataset:** Toxicity Multilingual Binary Classification Dataset (2025) — filtered for Thai  
-**Model:** TF-IDF + Keyword Dictionary + Logistic Regression  
-**Training Accuracy:** 89.5% | **Test Recall:** 50.4% on 1,889 harmful prompts
+A Thai text toxicity classifier built as the final project for **ITCS225 Principles of Operating Systems** (Faculty of ICT, Mahidol University) by team **JubJub**. The ML model is simple on purpose. The point of the project is the pipeline around it, which uses OS features to load, process and save data faster and more safely:
+
+- **Memory management**: `mmap()` vs `read()`
+- **Process management**: `fork()` worker pools
+- **Synchronization**: bounded buffer with a mutex and semaphores
+- **CPU scheduling**: CPU affinity and context-switch overhead
+- **I/O management**: `fsync()` strategies
+- **File management**: atomic writes, page cache
+
+| | |
+|---|---|
+| **Dataset** | Toxicity Multilingual Binary Classification Dataset (2025), Thai subset: 22,855 labelled samples |
+| **Model** | TF-IDF + Thai keyword dictionary + Logistic Regression (PyThaiNLP tokenizer) |
+| **Validation accuracy** | **89.5%** (80/20 split: 18,282 train / 4,571 validation) |
+| **Test recall** | **50.4%** (953 / 1,889 harmful prompts detected) |
+
+📄 [Project report](docs/Project_Report.pdf) · 📊 [Presentation slides](docs/Final_Presentation_Slides.pdf) · 🎬 [Demo video](docs/Final_Project_Demo.mov)
 
 ---
 
-## Installation
+## Two ways to run it
 
-### Google Colab (recommended)
-```bash
-!git clone https://github.com/phupaqazzaq/Jubjub_OS_Final.git
-%cd Jubjub_OS_Final
-!pip install pythainlp
-```
+The project ships in two versions. Both run the same code in `src/`.
 
-### VS Code / Local Machine
+| Version | Where | Best for |
+|---|---|---|
+| **Google Colab** | [`notebooks/Jubjub_OS_Final_Project.ipynb`](notebooks/Jubjub_OS_Final_Project.ipynb) | Running everything in the browser with no setup |
+| **Local machine** | [`src/`](src/) scripts | Running individual scripts and benchmarks from a terminal (VS Code, etc.) |
+
+### Option 1 — Google Colab
+
+1. Click the **Open in Colab** badge at the top of this page.
+2. Choose **Runtime → Run all**.
+
+The notebook clones this repository, installs the dependencies, then runs the pipeline, training, evaluation, prediction and all OS benchmarks in order.
+
+### Option 2 — Local machine
+
+Requires Python 3.10+.
+
 ```bash
 git clone https://github.com/phupaqazzaq/Jubjub_OS_Final.git
 cd Jubjub_OS_Final
-pip install scikit-learn pythainlp pyarrow scipy pandas
+python3 -m venv .venv
+source .venv/bin/activate        # Windows: .venv\Scripts\activate
+pip install -r requirements.txt
 ```
-### Notes for local machine
+
+A trained model is already included in `model/`, so you can make predictions straight away:
+
+```bash
+python3 src/predict.py "ไอ้บ้า มึงไปตายซะ"
 ```
-Please use python3 instead of python when encounter ModuleNotFoundError
+
+Or run the full workflow:
+
+```bash
+python3 src/pipeline.py              # OS-optimized data pipeline
+python3 src/train_model.py           # train the model (~30 s on CPU)
+python3 src/evaluate.py              # evaluate on the test set
+python3 src/predict.py --interactive # type Thai text, get a prediction
 ```
----
 
-## Command Reference
-
-### Core Pipeline
-
-| Command | What it does |
-|---------|-------------|
-| `python3 src/train_model.py` | Train the model from scratch. Benchmarks mmap vs read, picks the faster one. Tokenizes with multiprocessing. Saves model with fsync. Outputs accuracy and classification report. |
-| `python3 src/predict.py` | Run demo predictions on 5 sample Thai texts. Shows toxic/non-toxic with confidence. |
-| `python3 src/predict.py --interactive` | Interactive mode. Type any Thai text and get instant toxic/non-toxic prediction. Type `quit` to exit. |
-| `python3 src/predict.py "ไอ้บ้า มึงไปตายซะ"` | Predict a single text from command line. Shows label, confidence, probabilities, and latency. |
-| `python3 src/predict.py --file input.txt` | Predict all lines in a text file. Shows per-line results and summary. |
-| `python3 src/evaluate.py` | Evaluate model on the test set (1,889 harmful prompts). Shows overall recall, recall by risk area, recall by harm type, and worst misses. |
-
-### OS Benchmarks
-
-| Command | What it does |
-|---------|-------------|
-| `python3 src/pipeline.py` | Run the full OS-optimized pipeline: mmap/read benchmark → multiprocessing tokenization → atomic write. Shows timing for each step. |
-| `python3 src/pipeline.py --all-benchmarks` | Run the pipeline + ALL individual OS benchmarks below in sequence. Use this to generate all demo screenshots at once. |
-| `python3 src/data_loader.py` | **Memory Management** — Benchmark mmap() vs read() vs chunked read (512B, 64KB). Shows which is fastest for the 7MB dataset and why. |
-| `python3 src/preprocessor.py --benchmark` | **Process Management** — Benchmark 1 vs 2 vs 4 vs 8 workers. Shows speedup, efficiency, and per-worker chunk sizes. Demonstrates fork(). |
-| `python3 src/sync_queue.py` | **Synchronization** — Benchmark bounded buffer with different sizes (10, 50, 100, 500, 1000). Producer-consumer pattern with mutex + semaphores. Reports actual fastest buffer size. |
-| `python3 src/io_benchmark.py` | **I/O Management** — Benchmark write strategies: buffered, unbuffered, fsync per row, fsync per 100, fsync per 1000. Shows the durability vs speed trade-off. |
-| `python3 src/scheduler_demo.py` | **CPU Scheduling** — Benchmark CPU affinity (pinned vs unpinned) and context switch overhead (1 vs 4 vs 16 processes). Uses sched_setaffinity() and nice(). |
-| `python3 src/file_manager.py` | **File Management** — Benchmark page cache (cold vs warm read), atomic vs direct write, and stat() syscall speed. |
-
-### Performance Comparison
-
-| Command | What it does |
-|---------|-------------|
-| `python3 src/benchmark_optimization.py` | **Before vs After** — Runs the entire pipeline twice: once naive (no OS optimization), once optimized. Compares timing stage-by-stage and shows total speedup. |
+> **Notes**
+> - On macOS and Linux use `python3`. If you get `ModuleNotFoundError`, you are probably running a different Python than the one you installed the packages into.
+> - CPU affinity (`sched_setaffinity`) only exists on Linux. On macOS and Windows, `scheduler_demo.py` still runs but skips pinning. Colab runs on Linux, so it shows the full result.
+> - If loading the included model fails because of a scikit-learn version mismatch, retrain it with `python3 src/train_model.py`.
 
 ---
 
-## Project Structure
+## Command reference
+
+### Core pipeline
+
+| Command | What it does |
+|---|---|
+| `python3 src/train_model.py` | Trains the model from scratch. Benchmarks `mmap` vs `read` and uses the faster one, tokenizes with multiprocessing, saves with `fsync`, and prints accuracy and a classification report. |
+| `python3 src/predict.py` | Runs demo predictions on 5 sample Thai texts. |
+| `python3 src/predict.py "<text>"` | Predicts one text: label, confidence, probabilities and latency. |
+| `python3 src/predict.py --interactive` | Interactive mode. Type Thai text to get a prediction; type `quit` to exit. |
+| `python3 src/predict.py --file input.txt` | Predicts every line of a text file and prints a summary. |
+| `python3 src/evaluate.py` | Evaluates on the 1,889 harmful test prompts: overall recall, recall by risk area and harm type, and the worst misses. Saves `data/test_results.csv`. |
+
+### OS benchmarks
+
+| Command | OS topic | What it does |
+|---|---|---|
+| `python3 src/pipeline.py` | All | Full pipeline: `mmap`/`read` benchmark → multiprocessing tokenization → atomic write, with timing for each step. |
+| `python3 src/pipeline.py --all-benchmarks` | All | The pipeline plus every benchmark below, in sequence. |
+| `python3 src/data_loader.py` | Memory management | `mmap()` vs `read()` vs chunked reads (512 B, 64 KB). |
+| `python3 src/preprocessor.py --benchmark` | Process management | 1, 2, 4 and up to 8 forked workers (capped at your CPU count): speedup, efficiency, chunk sizes. |
+| `python3 src/sync_queue.py` | Synchronization | Producer–consumer bounded buffer (mutex + semaphores) with buffer sizes 10–1000. |
+| `python3 src/io_benchmark.py` | I/O management | Buffered vs unbuffered writes, and `fsync` per row / per 100 / per 1000 rows. |
+| `python3 src/scheduler_demo.py` | CPU scheduling | Pinned vs unpinned CPU affinity, and context-switch overhead with 1, 4 and 16 processes. |
+| `python3 src/file_manager.py` | File management | Cold vs warm page-cache reads, atomic vs direct write, `stat()` speed. |
+| `python3 src/benchmark_optimization.py` | Performance comparison | Runs the training pipeline naively and then OS-optimized, and compares each stage and the total speedup. |
+
+### Optional: WangchanBERTa
+
+`train_model.py --model bert` fine-tunes [WangchanBERTa](https://huggingface.co/airesearch/wangchanberta-base-att-spm-uncased) instead of TF-IDF. It needs a GPU and `pip install torch transformers accelerate`. The fine-tuned model is saved to `model/wangchanberta/`, which is git-ignored because of its size.
+
+---
+
+## OS concepts → system calls
+
+| OS component | File | System calls |
+|---|---|---|
+| Memory management | `data_loader.py` | `mmap`, `munmap`, `fstat`, `read` |
+| Process management | `preprocessor.py` | `fork`, `wait`, `getpid` |
+| Synchronization | `sync_queue.py` | Lock (`futex`), Semaphore (`sem_wait` / `sem_post`) |
+| CPU scheduling | `scheduler_demo.py` | `sched_setaffinity`, `sched_getaffinity`, `getpid` |
+| I/O management | `io_benchmark.py` | `open`, `write`, `fsync`, `close`, `unlink` |
+| File management | `file_manager.py` | `stat`, `rename`, `mkstemp`, `unlink` |
+| Performance comparison | `benchmark_optimization.py` | All of the above |
+
+---
+
+## Project structure
 
 ```
 Jubjub_OS_Final/
+├── notebooks/
+│   └── Jubjub_OS_Final_Project.ipynb   # Google Colab version
+├── src/                                # Local version: all scripts
+│   ├── pipeline.py                     # Full OS pipeline + all benchmarks
+│   ├── train_model.py                  # Model training (TF-IDF or BERT)
+│   ├── predict.py                      # Prediction: single / interactive / file
+│   ├── evaluate.py                     # Test set evaluation
+│   ├── benchmark_optimization.py       # Before vs after comparison
+│   ├── data_loader.py                  # Memory management (mmap vs read)
+│   ├── preprocessor.py                 # Process management (fork)
+│   ├── sync_queue.py                   # Synchronization (bounded buffer)
+│   ├── scheduler_demo.py               # CPU scheduling (affinity + context switches)
+│   ├── io_benchmark.py                 # I/O management (fsync strategies)
+│   └── file_manager.py                 # File management (atomic write + cache)
 ├── data/
-│   ├── thai_toxicity.csv             # Training dataset (22,855 samples)
-│   ├── toxic_keywords.csv            # 81 Thai profanity/slur keywords
-│   ├── harm_intent_keywords.csv      # 70 harm-intent keywords (7 categories)
-│   ├── test.parquet                  # Test set (1,889 harmful prompts)
-│   ├── thai_preprocessed.csv         # Generated by pipeline.py
-│   └── test_results.csv              # Generated by evaluate.py
-├── src/
-│   ├── train_model.py                # Model training
-│   ├── predict.py                    # Prediction (single, interactive, file)
-│   ├── evaluate.py                   # Test set evaluation
-│   ├── pipeline.py                   # Full OS pipeline + benchmarks
-│   ├── benchmark_optimization.py     # Before vs After comparison
-│   ├── data_loader.py                # Memory management (mmap vs read)
-│   ├── preprocessor.py               # Multiprocessing (fork)
-│   ├── sync_queue.py                 # Synchronization (bounded buffer)
-│   ├── io_benchmark.py               # I/O management (fsync strategies)
-│   ├── scheduler_demo.py             # CPU scheduling (affinity + nice)
-│   └── file_manager.py               # File management (atomic write + cache)
-├── model/                            # Created after running train_model.py
-│   ├── tfidf_model.pkl               # Trained Logistic Regression
-│   ├── tfidf_vectorizer.pkl          # Fitted TF-IDF vocabulary
-│   ├── toxic_keywords.json           # Keywords saved with model
-│   ├── harm_intent_keywords.json     # Harm keywords saved with model
-│   └── config.json                   # Model config and accuracy
+│   ├── thai_toxicity.csv               # Training set (22,855 samples)
+│   ├── test.parquet                    # Test set (1,889 harmful prompts)
+│   ├── toxic_keywords.csv              # 81 Thai profanity / slur keywords
+│   └── harm_intent_keywords.csv        # 70 harm-intent keywords (7 categories)
+├── model/                              # Trained model (rebuilt by train_model.py)
+│   ├── tfidf_model.pkl                 # Logistic Regression
+│   ├── tfidf_vectorizer.pkl            # Fitted TF-IDF vocabulary
+│   ├── toxic_keywords.json
+│   ├── harm_intent_keywords.json
+│   └── config.json                     # Model settings and accuracy
+├── docs/
+│   ├── Project_Report.pdf
+│   ├── Final_Presentation_Slides.pdf
+│   └── Final_Project_Demo.mov
+├── requirements.txt
 └── README.md
 ```
 
----
-
-## Quick Start (Colab)
-
-```bash
-!git clone https://github.com/phupaqazzaq/Jubjub_OS_Final.git
-%cd Jubjub_OS_Final
-!pip install pythainlp
-
-# Train model
-!python src/train_model.py
-
-# Predict
-!python src/predict.py --interactive
-
-# Evaluate on test set
-!python src/evaluate.py
-
-# Before vs After benchmark
-!python src/benchmark_optimization.py
-
-# All OS benchmarks
-!python src/pipeline.py --all-benchmarks
-```
+The scripts also generate `data/thai_preprocessed.csv` (from `pipeline.py`) and `data/test_results.csv` (from `evaluate.py`). Both are git-ignored.
 
 ---
 
-## OS Components → Rubric Mapping
+## Team JubJub
 
-| OS Component | File | System Calls | Rubric |
-|---|---|---|---|
-| Memory Management | `data_loader.py` | mmap, munmap, fstat, read | OS impl 30% |
-| Process Management | `preprocessor.py` | fork, wait, getpid | OS impl 30% |
-| Synchronization | `sync_queue.py` | Lock (futex), Semaphore (sem_wait/post) | OS impl 30% |
-| CPU Scheduling | `scheduler_demo.py` | sched_setaffinity, nice | OS impl 30% |
-| I/O Management | `io_benchmark.py` | open, write, fsync, close, unlink | Syscalls 20% |
-| File Management | `file_manager.py` | stat, rename, mkstemp, unlink | Syscalls 20% |
-| Performance Comparison | `benchmark_optimization.py` | All of the above | Trade-offs 20% |
+| Name | Nickname |
+|---|---|
+| Natdanai Chuwongapichat | Phupa |
+| Uchukorn Ek-areejit | Korn |
+| Duarn Kaeokertkhen | Du Du |
+| Nathawat Burapolpiman | Q |
+| Saharut Srithawong | Euro |
+
+Presented to Aj. Kanoksak Wattanachote, ITCS225 Principles of Operating Systems, Faculty of Information and Communication Technology, Mahidol University.
+
+---
+
+## ⚠️ Content warning
+
+The dataset and keyword lists contain offensive Thai language, including profanity, slurs and hate speech. They are included only to train and evaluate the classifier.
